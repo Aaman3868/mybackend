@@ -1,16 +1,12 @@
-import { json } from "express"
-
-const asyncHandler = (fn) => async(req,res,next) => {
-try{
-    await fn(req,res,next)
-
-}catch(err){
+const asyncHandler = (fn) => async (req, res, next) => {
+  try {
+    await fn(req, res, next);
+  } catch (err) {
     res.status(err.code || 500).json({
-        success: false,
-        message:err.message
-    })
-}
-}
+      success: false,
+      message: err.message,
+    });
+  }
+};
 
-export {asyncHandler}
-
+export { asyncHandler };

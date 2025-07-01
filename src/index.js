@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
-import express from "express"
+dotenv.config(); // ensure environment variables are loaded
+
 import connectDB from "./db/conn.js";
-// import app from "./app.js";
+import { app } from "./app.js"; // ✅ FIXED: import app properly
 
 
 
