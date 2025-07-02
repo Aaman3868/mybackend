@@ -25,13 +25,14 @@ const UserSchema = new  Schema({
     trim: true,
     index:true
   },
-  avatar : {
-    type :String,
-    required : true,
-  },
-  coverimage : {
-    type :String,
-  },
+  avatar: {
+  type: String,
+  required: true
+},
+coverimage: {
+  type: String,
+  default: ""
+},
   watchistory :{
     type: Schema.Types.ObjectId,
     ref : "Video" 
@@ -57,7 +58,7 @@ UserSchema.pre("save", async function(next) {
 })
 
 UserSchema.methods.ispasswordCorrect = async function (password) {
-     return     await bcrypt.compare(password,this.password)
+     return  await bcrypt.compare(password,this.password)
 }
 UserSchema.methods.generateAccessToken = function(){
     return jwt.sign(
