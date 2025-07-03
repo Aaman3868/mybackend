@@ -191,4 +191,106 @@ const refreshAccessToken = asyncHandler(async (req,res) =>{
    }
 })
 
-export { registerUser,loginUser,logoutuser,refreshAccessToken };
+const changeCurrentPassword = asyncHandler(async (req,res)=>{
+    const {oldpassword,newpassword} = req.body
+
+    const user = await User.findById(req.user?._id)
+   ispasswordCorrect = await  user.ispasswordCorrect(oldpassword)
+
+   if(!ispasswordCorrect){
+    throw new ApiError(400,"Invalid Old Password")
+   }
+
+   user.password = newpassword
+   await user.save({validateBeforeSave:false})
+
+   return res.status(200)
+   .json(new ApiResponse(200, {},"Password Updated"))
+})
+
+
+const getcurrentUser = asyncHandler(async (req,res)=>{
+    
+    return res
+        .status(200)
+        .json(200,req.user, "current User fetch")
+})
+
+
+const updateaccout = asyncHandler(async (req,res)=>{
+    const {fullname,email} = req.body
+
+    if(!fullname || !email){
+        throw new ApiError(401,"fullname or email required");
+    }
+    
+    const updateuser = User.findByIdAndUpdate(req.user?._id,
+        {
+            $set: {
+                fullname,
+                email:email
+            }
+    },{
+        new:true
+    }).select("-password")
+
+
+    return res.status(200)
+    .json(new ApiResponse(200,updateuser,"User Updated"))
+
+});
+
+
+const updateavatar = asyncHandler(async(req,res)=>{
+    const avtarlocal = req.files?.path
+
+    if(!avtarlocal){
+        throw new ApiError(400,"No localpath")
+    }
+
+    const avatar = await uploadcloud(avtarlocal)
+     if(!avatar.url){
+        throw new ApiError(400,"No localpath avaialble")
+    }
+
+ const users =  await  User.findByIdAndUpdate(req.user?._id,{
+        $set:{
+             avatar:avatar.url
+        }
+    },{new:true}).select("-password")
+
+     return res.status(200)
+    .json(new ApiResponse(200,users,"User Image updated"))
+})
+
+const updateCoverImage = asyncHandler(async(req,res)=>{
+    const coverlocal = req.files?.path
+
+    if(!avtarlocal){
+        throw new ApiError(400,"No coverlocal")
+    }
+
+    const coverimage = await uploadcloud(avtarlocal)
+     if(!coverimage.url){
+        throw new ApiError(400,"No coverlocal avaialble")
+    }
+
+  const users=  await  User.findByIdAndUpdate(req.user?._id,{
+        $set:{
+             coverimage:coverimage.url
+        }
+    },{new:true}).select("-password")
+
+     return res.status(200)
+    .json(new ApiResponse(200,users,"User Image updated"))
+})
+
+export { registerUser,
+    loginUser,
+    logoutuser,
+    refreshAccessToken ,
+     changeCurrentPassword ,
+     getcurrentUser,
+     updateaccout,
+     updateavatar,updateCoverImage
+    };
