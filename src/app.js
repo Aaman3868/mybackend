@@ -7,7 +7,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,  // ✅ corrected typo from CORS_ORIGN
+     origin: 'http://localhost:3000',  // ✅ corrected typo from CORS_ORIGN
     credentials: true
 }));
 
