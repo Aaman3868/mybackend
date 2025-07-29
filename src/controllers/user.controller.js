@@ -224,7 +224,7 @@ const updateaccout = asyncHandler(async (req,res)=>{
         throw new ApiError(401,"fullname or email required");
     }
     
-    const updateuser = User.findByIdAndUpdate(req.user?._id,
+    const updateuser = await  User.findByIdAndUpdate(req.user?._id,
         {
             $set: {
                 fullname,
@@ -264,26 +264,31 @@ const updateavatar = asyncHandler(async(req,res)=>{
 })
 
 const updateCoverImage = asyncHandler(async(req,res)=>{
-    const coverlocal = req.files?.path
+    const coverlocal = req.files?.path;
 
-    if(!avtarlocal){
-        throw new ApiError(400,"No coverlocal")
+   if (!coverlocal) {
+    throw new ApiError(400, "No coverlocal");
+}
+    const coverimage = await uploadcloud(avtarlocal);
+
+    if (!coverimage.url) {
+        throw new ApiError(400, "No coverlocal available");
     }
 
-    const coverimage = await uploadcloud(avtarlocal)
-     if(!coverimage.url){
-        throw new ApiError(400,"No coverlocal avaialble")
-    }
+    const users = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                coverimage: coverimage.url
+            }
+        },
+        { new: true }
+    ).select("-password");
 
-  const users=  await  User.findByIdAndUpdate(req.user?._id,{
-        $set:{
-             coverimage:coverimage.url
-        }
-    },{new:true}).select("-password")
+    return res.status(200)
+        .json(new ApiResponse(200, users, "User Image updated"));
+});
 
-     return res.status(200)
-    .json(new ApiResponse(200,users,"User Image updated"))
-})
 
 export { registerUser,
     loginUser,
