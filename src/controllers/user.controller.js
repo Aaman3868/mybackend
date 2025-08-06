@@ -290,6 +290,16 @@ const updateCoverImage = asyncHandler(async(req,res)=>{
 });
 
 
+const getAllUser = asyncHandler(async (req, res) => {
+  const users = await User.find()
+    .sort({ createdAt: -1 })
+    .populate("username", "fullname username avatar");
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, users, "Users fetched successfully"));
+});
+
 export { registerUser,
     loginUser,
     logoutuser,
@@ -297,5 +307,6 @@ export { registerUser,
      changeCurrentPassword ,
      getcurrentUser,
      updateaccout,
-     updateavatar,updateCoverImage
+     updateavatar,updateCoverImage,
+     getAllUser
     };

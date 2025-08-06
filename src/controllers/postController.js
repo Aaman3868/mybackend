@@ -49,4 +49,33 @@ const getAllPosts = asyncHandler(async (req, res) => {
 });
 
 
-export { createPost  ,getAllPosts};
+const likeposts = asyncHandler( async (req,res)=>{
+  const postId = req.params.id;
+  const userId = req.body.userId;
+
+   try {
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+    const hasLiked = post.likes.includes(userId);
+
+    if (hasLiked) {
+      post.likes.pull(userId); // Remove like
+    } else {
+      post.likes.push(userId); // Add like
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      message: hasLiked ? "Post unliked" : "Post liked",
+      likesCount: post.likes.length,
+    });
+  } catch (error) {
+    console.error("Like Post Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+export { createPost  ,getAllPosts,likeposts};
