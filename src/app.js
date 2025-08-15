@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes.js";
 import postRoutes from "./routes/post.routes.js";
+import friends from "./routes/chat.routes.js"
 
 const app = express();
 
@@ -22,4 +23,5 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/alluser", userRouter);
 app.use("/api/v1/posts", postRoutes);
 app.use("/api/v1/posts", postRoutes);
+app.use("/api/v1", friends);
 export { app };
