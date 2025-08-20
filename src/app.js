@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes.js";
 import postRoutes from "./routes/post.routes.js";
 import friends from "./routes/chat.routes.js"
-
+import friendshipRoutes from "./routes/friendship.routes.js";
 const app = express();
 
 // Middleware
@@ -17,7 +17,7 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
-
+app.use("/api/v1/friends", friendshipRoutes);
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/alluser", userRouter);

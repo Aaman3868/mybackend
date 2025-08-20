@@ -5,6 +5,8 @@ import { uploadcloud } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { application } from "express";
+
+// Refresh token
 const generateAccessTokenandRefreshToken = async(userId) =>{
     try {
         const users = await User.findById(userId)
@@ -301,7 +303,7 @@ const getAllUser = asyncHandler(async (req, res) => {
 });
 
 export { registerUser,
-    loginUser,
+    loginUser,     
     logoutuser,
     refreshAccessToken ,
      changeCurrentPassword ,
